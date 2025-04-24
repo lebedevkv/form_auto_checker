@@ -1,0 +1,3 @@
+([('main',
+   '/Users/lebedevkv/PycharmProjects/form_auto_checker/dist/main',
+   'EXECUTABLE')],)
