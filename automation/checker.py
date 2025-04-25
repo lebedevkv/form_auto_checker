@@ -1,9 +1,7 @@
-# automation/checker.py
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from automation.utils import human_typing
-import time
 
 class EmployeeChecker:
     def __init__(self, driver, log_fn, data_row):
@@ -25,10 +23,9 @@ class EmployeeChecker:
         button.click()
 
     def fill_birth_date(self):
-        birth_date = self.data["Дата рождения"]
-        self.wait_and_fill(By.NAME, "c_birth_date", birth_date)
+        self.wait_and_fill(By.NAME, "c_birth_date", self.data["Дата рождения"])
         self.click_button_by_xpath("//button[.//span[text()=' Продолжить ']]")
-        self.log(f"🗓 Введена дата рождения: {birth_date}")
+        self.log(f"🗓 Введена дата рождения: {self.data['Дата рождения']}")
 
     def fill_passport_info(self):
         self.wait_and_fill(By.ID, "c_series", self.data["Серия"])
@@ -41,9 +38,7 @@ class EmployeeChecker:
         result_block = WebDriverWait(self.driver, 30).until(
             EC.presence_of_element_located((By.CLASS_NAME, "output-html"))
         )
-        result_text = result_block.find_element(By.TAG_NAME, "h3").text
-        self.log(f"📄 Результат: {result_text}")
-        return result_text
+        return result_block.find_element(By.TAG_NAME, "h3").text
 
     def click_check_again(self):
         self.click_button_by_xpath("//button[.//span[text()=' Проверить ещё ']]")
@@ -54,6 +49,7 @@ class EmployeeChecker:
             self.fill_birth_date()
             self.fill_passport_info()
             comment = self.get_result_text()
+            self.log(f"📄 Результат: {comment}")
             self.click_check_again()
             return comment
         except Exception as e:
